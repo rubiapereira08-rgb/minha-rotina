@@ -28,12 +28,18 @@ input,textarea,select{width:100%;padding:11px;border:1px solid var(--line);borde
 .stepdone{background:var(--green2);border-color:#a9cfbd;text-decoration:line-through;color:#567}
 .stepdone .stepcheck{background:var(--green);border-color:var(--green);color:#fff}
 .success{margin-top:18px;padding:14px;border-radius:12px;background:var(--green2);color:#28644e;font-weight:700}
+
+.patient-card{border:1px solid var(--line);border-radius:16px;padding:15px;margin:10px 0;background:#fff;cursor:pointer}
+.patient-card:hover{box-shadow:0 5px 18px #00000010}
+.patient-card b{display:block;margin-bottom:4px}.patient-meta{font-size:12px;color:var(--muted)}
+.status-online{color:#2c795c;font-weight:700;font-size:12px}
+.note{padding:13px;border-left:4px solid var(--green);background:#f5faf7;border-radius:8px;margin-top:12px}
 </style>
 </head>
 <body>
 <div class="app">
 <header>
-<div class="brand">🌿 Minha Rotina <small>Clínica Ressignificar • Acompanhamento</small></div>
+<div class="brand">🌿 Minha Rotina <small>Clínica Ressignificar</small></div>
 <div class="switch"><button id="patientBtn" class="active" onclick="setMode('patient')">Paciente</button><button id="proBtn" onclick="setMode('pro')">Psicóloga</button></div>
 </header>
 <div id="root"></div>
@@ -83,7 +89,7 @@ const stepMap={
 let activeTaskId=null, stepState={};
 
 let storedTasks=JSON.parse(localStorage.getItem("mr_tasks")||"null");
-let tasks=(Array.isArray(storedTasks) && storedTasks.some(t=>t.time==="22:00"))?storedTasks:defaultTasks;
+let tasks=(Array.isArray(storedTasks) && storedTasks.length>=18 && storedTasks.some(t=>t.time==="22:00"))?storedTasks:defaultTasks;
 let mood=localStorage.getItem("mr_mood")||"";
 let mode="patient",page="home";
 function save(){localStorage.setItem("mr_tasks",JSON.stringify(tasks));localStorage.setItem("mr_mood",mood)}
@@ -100,7 +106,7 @@ function toggleTask(id){let t=tasks.find(x=>x.id===id);t.done=!t.done;if(t.done&
 function setMood(m){mood=m;save();render()}
 function patient(){
 let content="";
-if(page==="home") content=`<div class="card" style="background:#f7faf9"><b>👤 Paciente</b><span class="badge" style="float:right">Acesso individual</span><p class="sub" style="margin:6px 0 0">Minha rotina pessoal • 08:00 às 22:00</p></div><div class="card hero"><h1>Bom dia! ☀️</h1><div class="sub">Terça-feira, 15 de setembro • Rotina das 08:00 às 22:00</div><p class="quote">“Pequenos passos também são grandes conquistas.”</p><div class="progress"><span style="width:${pct()}%"></span></div><small>${pct()}% da rotina concluída</small><div style="margin-top:14px"><button class="btn secondary" onclick="alert('Pedido de ajuda registrado no protótipo. Na versão online, isso será enviado para o painel da psicóloga.')">🆘 Preciso de ajuda</button></div></div>
+if(page==="home") content=`<div class="card hero"><h1>Bom dia! ☀️</h1><div class="sub">Terça-feira, 15 de setembro • Rotina das 08:00 às 22:00</div><p class="quote">“Pequenos passos também são grandes conquistas.”</p><div class="progress"><span style="width:${pct()}%"></span></div><small>${pct()}% da rotina concluída</small></div>
 <div class="card"><h2>Minha rotina de hoje</h2>${taskList()}</div>`;
 else if(page==="mood") content=`<div class="card"><h1>Como você está agora?</h1><p class="sub">Antes de começar, escolha como você está se sentindo.</p><div class="moods">${["😀 Tranquilo","🙂 Bem","😐 Normal","😟 Ansioso","😣 Muito ansioso"].map(x=>`<button class="mood ${mood===x?"sel":""}" onclick="setMood('${x}')">${x}</button>`).join("")}</div>${mood.includes("Ansioso")?`<div class="card hero" style="margin-top:20px"><h2>Vamos por partes. 💙</h2><p>1️⃣ Respire lentamente<br>2️⃣ Leia somente a próxima tarefa<br>3️⃣ Comece pelo primeiro passo<br>4️⃣ Se precisar, peça ajuda</p><button class="btn">Iniciar respiração guiada</button></div>`:""}</div>`;
 else if(page==="goals") content=`<div class="card"><h1>Minhas conquistas ⭐</h1><p class="sub">Acompanhe seu progresso sem pressa.</p><div class="kpis"><div class="kpi"><b>${tasks.filter(t=>t.done).length}</b><small>Tarefas concluídas</small></div><div class="kpi"><b>${pct()}%</b><small>Rotina de hoje</small></div><div class="kpi"><b>3</b><small>Dias de sequência</small></div></div><div class="card hero" style="margin-top:16px"><b>🎯 Meta atual</b><p>Realizar 3 tarefas da manhã com autonomia.</p><div class="progress"><span style="width:66%"></span></div></div></div>`;
@@ -111,12 +117,19 @@ function pro(){
 let done=tasks.filter(t=>t.done).length, indep=tasks.filter(t=>t.support==="independente").length, rem=tasks.filter(t=>t.support==="lembrete").length, acomp=tasks.filter(t=>t.support==="acompanhamento").length;
 let content="";
 if(page==="dashboard") content=`<div class="card hero"><h1>Olá, Rubiana! 👋</h1><p class="sub">Acompanhe a rotina das 08:00 às 22:00 e o desenvolvimento de autonomia do paciente.</p><div class="kpis"><div class="kpi"><b>${done}/${tasks.length}</b><small>Tarefas concluídas</small></div><div class="kpi"><b>${pct()}%</b><small>Rotina realizada</small></div><div class="kpi"><b>${indep}</b><small>Independentes</small></div></div></div>
+<div class="card"><h2>Resumo do acompanhamento</h2>
+<div class="kpis"><div class="kpi"><b>${indep}</b><small>Independentes</small></div><div class="kpi"><b>${rem}</b><small>Com lembrete</small></div><div class="kpi"><b>${acomp}</b><small>Com acompanhamento</small></div></div>
+<div class="note">💡 <b>Foco:</b> reduzir gradualmente a necessidade de suporte, mantendo previsibilidade e pequenos passos.</div></div>
 <div class="card"><h2>Acompanhamento de hoje</h2>${tasks.map(t=>`<div class="task"><div class="time">${t.time}</div><div><div class="task-title">${t.title}</div><small>${t.done?"Concluída":"Pendente"}</small></div><span class="badge">${t.support==="independente"?"🟢 Independente":t.support==="lembrete"?"🟡 Lembrete":t.support==="acompanhamento"?"🔴 Acompanhamento":"⚪ Sem registro"}</span></div>`).join("")}</div>`;
+else if(page==="patients") content=`<div class="card"><h1>👥 Meus pacientes</h1><p class="sub">Protótipo de cadastro e seleção de pacientes.</p>
+<div class="patient-card" onclick="nav('dashboard')"><b>Paciente 01</b><div class="patient-meta">Rotina ativa • 08:00–22:00</div><div class="status-online">● Rotina em acompanhamento</div></div>
+<div class="patient-card"><b>Novo paciente</b><div class="patient-meta">Na versão online, aqui será possível cadastrar nome, acesso e rotina individual.</div></div></div>
+<div class="card"><h2>Próxima evolução</h2><p>Registrar semanalmente o nível de suporte necessário para identificar ganhos de autonomia.</p></div>`;
 else if(page==="tracking") content=`<div class="card"><h1>Rotinas e tarefas</h1><p class="sub">Defina tarefas objetivas, previsíveis e divididas em pequenos passos.</p><label>Nova tarefa</label><input id="newTask" placeholder="Ex.: Separar roupas do dia seguinte"><label>Horário</label><input id="newTime" type="time" value="18:00"><br><br><button class="btn" onclick="addTask()">+ Adicionar tarefa</button></div><div class="card"><h2>Tarefas cadastradas</h2>${taskList()}</div>`;
 else if(page==="notes") content=`<div class="card"><h1>Detalhes e observações</h1><p class="sub">Registre dados relevantes para a intervenção e acompanhamento da autonomia.</p><label>Selecione a tarefa</label><select id="selTask">${tasks.map(t=>`<option value="${t.id}">${t.time} — ${t.title}</option>`).join("")}</select><label>Nível de suporte</label><div class="support"><button onclick="setSupport('independente')">🟢 Independente</button><button onclick="setSupport('lembrete')">🟡 Com lembrete</button><button onclick="setSupport('acompanhamento')">🔴 Com acompanhamento</button></div><label>Observação</label><textarea id="obs" rows="5" placeholder="Ex.: Apresentou dificuldade para iniciar. Após orientação, conseguiu concluir."></textarea><br><br><button class="btn" onclick="saveNote()">Salvar registro</button></div>`;
 else if(page==="reports") content=`<div class="card"><h1>Evolução semanal</h1><p class="sub">O objetivo é acompanhar a redução gradual do suporte necessário.</p><div><b>🟢 Independente</b><div class="bar"><i style="width:${Math.min(100,indep/tasks.length*100)}%"></i></div><b>🟡 Com lembrete</b><div class="bar"><i style="width:${Math.min(100,rem/tasks.length*100)}%"></i></div><b>🔴 Com acompanhamento</b><div class="bar"><i style="width:${Math.min(100,acomp/tasks.length*100)}%"></i></div></div><hr style="border:0;border-top:1px solid var(--line);margin:20px 0"><div class="legend"><span><i class="dot green"></i>Independente</span><span><i class="dot yellow"></i>Lembrete</span><span><i class="dot red"></i>Acompanhamento</span></div></div>`;
 else content=`<div class="card"><h1>Metas terapêuticas 🎯</h1><p class="sub">Metas objetivas, graduais e observáveis.</p><div class="card hero"><b>Meta atual</b><p>Realizar 3 tarefas da manhã com autonomia.</p><div class="progress"><span style="width:66%"></span></div><small>2 de 3 dias alcançados</small></div><button class="btn">+ Nova meta</button></div>`;
-return `<main><aside class="nav"><button class="${page==='dashboard'?'active':''}" onclick="nav('dashboard')">📊 Visão geral</button><button class="${page==='tracking'?'active':''}" onclick="nav('tracking')">📋 Rotinas e tarefas</button><button class="${page==='notes'?'active':''}" onclick="nav('notes')">📝 Observações</button><button class="${page==='reports'?'active':''}" onclick="nav('reports')">📈 Evolução</button><button class="${page==='goals'?'active':''}" onclick="nav('goals')">🎯 Metas</button></aside><section class="content">${content}</section></main>`
+return `<main><aside class="nav"><button class="${page==='patients'?'active':''}" onclick="nav('patients')">👥 Pacientes</button><button class="${page==='dashboard'?'active':''}" onclick="nav('dashboard')">📊 Visão geral</button><button class="${page==='tracking'?'active':''}" onclick="nav('tracking')">📋 Rotinas e tarefas</button><button class="${page==='notes'?'active':''}" onclick="nav('notes')">📝 Observações</button><button class="${page==='reports'?'active':''}" onclick="nav('reports')">📈 Evolução</button><button class="${page==='goals'?'active':''}" onclick="nav('goals')">🎯 Metas</button></aside><section class="content">${content}</section></main>`
 }
 function addTask(){let title=document.getElementById("newTask").value.trim(),time=document.getElementById("newTime").value;if(!title)return alert("Digite uma tarefa.");tasks.push({id:Date.now(),time,title,desc:"Tarefa adicionada pela psicóloga",done:false,support:""});tasks.sort((a,b)=>a.time.localeCompare(b.time));save();render()}
 function setSupport(s){let id=+document.getElementById("selTask").value;let t=tasks.find(x=>x.id===id);t.support=s;save();render()}
