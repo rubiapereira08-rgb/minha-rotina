@@ -123,13 +123,25 @@ if(page==="dashboard") content=`<div class="card hero"><h1>Olá, Rubiana! 👋</
 <div class="card"><h2>Acompanhamento de hoje</h2>${tasks.map(t=>`<div class="task"><div class="time">${t.time}</div><div><div class="task-title">${t.title}</div><small>${t.done?"Concluída":"Pendente"}</small></div><span class="badge">${t.support==="independente"?"🟢 Independente":t.support==="lembrete"?"🟡 Lembrete":t.support==="acompanhamento"?"🔴 Acompanhamento":"⚪ Sem registro"}</span></div>`).join("")}</div>`;
 else if(page==="patients") content=`<div class="card"><h1>👥 Meus pacientes</h1><p class="sub">Protótipo de cadastro e seleção de pacientes.</p>
 <div class="patient-card" onclick="nav('dashboard')"><b>Paciente 01</b><div class="patient-meta">Rotina ativa • 08:00–22:00</div><div class="status-online">● Rotina em acompanhamento</div></div>
-<div class="patient-card"><b>Novo paciente</b><div class="patient-meta">Na versão online, aqui será possível cadastrar nome, acesso e rotina individual.</div></div></div>
+<div class="patient-card" onclick="nav('newpatient')"><b>➕ Novo paciente</b><div class="patient-meta">Clique para cadastrar um paciente e criar o acesso dele.</div></div></div>
 <div class="card"><h2>Próxima evolução</h2><p>Registrar semanalmente o nível de suporte necessário para identificar ganhos de autonomia.</p></div>`;
+else if(page==="newpatient") content=`<div class="card"><h1>➕ Novo paciente</h1>
+<p class="sub">Preencha os dados básicos para criar o perfil no protótipo.</p>
+<label>Nome do paciente</label><input id="pname" placeholder="Ex.: Paciente 01">
+<label>Data de nascimento</label><input id="pdob" type="date">
+<label>Usuário de acesso</label><input id="puser" placeholder="Ex.: paciente01">
+<label>Senha provisória</label><input id="ppass" type="password" placeholder="Crie uma senha provisória">
+<div class="kpis" style="margin-top:14px">
+<div class="kpi"><b>08:00</b><small>Início da rotina</small></div>
+<div class="kpi"><b>22:00</b><small>Fim da rotina</small></div>
+<div class="kpi"><b>18</b><small>Atividades-base</small></div>
+</div>
+<div class="actionrow"><button class="btn" onclick="createPatient()">💾 Criar paciente</button><button class="btn secondary" onclick="nav('patients')">Cancelar</button></div></div>`;
 else if(page==="tracking") content=`<div class="card"><h1>Rotinas e tarefas</h1><p class="sub">Defina tarefas objetivas, previsíveis e divididas em pequenos passos.</p><label>Nova tarefa</label><input id="newTask" placeholder="Ex.: Separar roupas do dia seguinte"><label>Horário</label><input id="newTime" type="time" value="18:00"><br><br><button class="btn" onclick="addTask()">+ Adicionar tarefa</button></div><div class="card"><h2>Tarefas cadastradas</h2>${taskList()}</div>`;
 else if(page==="notes") content=`<div class="card"><h1>Detalhes e observações</h1><p class="sub">Registre dados relevantes para a intervenção e acompanhamento da autonomia.</p><label>Selecione a tarefa</label><select id="selTask">${tasks.map(t=>`<option value="${t.id}">${t.time} — ${t.title}</option>`).join("")}</select><label>Nível de suporte</label><div class="support"><button onclick="setSupport('independente')">🟢 Independente</button><button onclick="setSupport('lembrete')">🟡 Com lembrete</button><button onclick="setSupport('acompanhamento')">🔴 Com acompanhamento</button></div><label>Observação</label><textarea id="obs" rows="5" placeholder="Ex.: Apresentou dificuldade para iniciar. Após orientação, conseguiu concluir."></textarea><br><br><button class="btn" onclick="saveNote()">Salvar registro</button></div>`;
 else if(page==="reports") content=`<div class="card"><h1>Evolução semanal</h1><p class="sub">O objetivo é acompanhar a redução gradual do suporte necessário.</p><div><b>🟢 Independente</b><div class="bar"><i style="width:${Math.min(100,indep/tasks.length*100)}%"></i></div><b>🟡 Com lembrete</b><div class="bar"><i style="width:${Math.min(100,rem/tasks.length*100)}%"></i></div><b>🔴 Com acompanhamento</b><div class="bar"><i style="width:${Math.min(100,acomp/tasks.length*100)}%"></i></div></div><hr style="border:0;border-top:1px solid var(--line);margin:20px 0"><div class="legend"><span><i class="dot green"></i>Independente</span><span><i class="dot yellow"></i>Lembrete</span><span><i class="dot red"></i>Acompanhamento</span></div></div>`;
 else content=`<div class="card"><h1>Metas terapêuticas 🎯</h1><p class="sub">Metas objetivas, graduais e observáveis.</p><div class="card hero"><b>Meta atual</b><p>Realizar 3 tarefas da manhã com autonomia.</p><div class="progress"><span style="width:66%"></span></div><small>2 de 3 dias alcançados</small></div><button class="btn">+ Nova meta</button></div>`;
-return `<main><aside class="nav"><button class="${page==='patients'?'active':''}" onclick="nav('patients')">👥 Pacientes</button><button class="${page==='dashboard'?'active':''}" onclick="nav('dashboard')">📊 Visão geral</button><button class="${page==='tracking'?'active':''}" onclick="nav('tracking')">📋 Rotinas e tarefas</button><button class="${page==='notes'?'active':''}" onclick="nav('notes')">📝 Observações</button><button class="${page==='reports'?'active':''}" onclick="nav('reports')">📈 Evolução</button><button class="${page==='goals'?'active':''}" onclick="nav('goals')">🎯 Metas</button></aside><section class="content">${content}</section></main>`
+return `<main><aside class="nav"><button class="${page==='patients' || page==='newpatient'?'active':''}" onclick="nav('patients')">👥 Pacientes</button><button class="${page==='dashboard'?'active':''}" onclick="nav('dashboard')">📊 Visão geral</button><button class="${page==='tracking'?'active':''}" onclick="nav('tracking')">📋 Rotinas e tarefas</button><button class="${page==='notes'?'active':''}" onclick="nav('notes')">📝 Observações</button><button class="${page==='reports'?'active':''}" onclick="nav('reports')">📈 Evolução</button><button class="${page==='goals'?'active':''}" onclick="nav('goals')">🎯 Metas</button></aside><section class="content">${content}</section></main>`
 }
 function addTask(){let title=document.getElementById("newTask").value.trim(),time=document.getElementById("newTime").value;if(!title)return alert("Digite uma tarefa.");tasks.push({id:Date.now(),time,title,desc:"Tarefa adicionada pela psicóloga",done:false,support:""});tasks.sort((a,b)=>a.time.localeCompare(b.time));save();render()}
 function setSupport(s){let id=+document.getElementById("selTask").value;let t=tasks.find(x=>x.id===id);t.support=s;save();render()}
@@ -160,6 +172,19 @@ function guidedTask(){
   <div style="margin-top:18px">${st.map((s,i)=>`<div class="step ${ss[i]?'stepdone':''}" onclick="toggleStep(${i})"><span class="stepcheck">${ss[i]?'✓':''}</span><span>${i+1}. ${s}</span></div>`).join("")}</div>
   ${all?`<div class="success">🎉 Muito bem! Você concluiu essa atividade.</div>`:`<p class="quote" style="margin-top:18px">Faça apenas o próximo passo. Você não precisa fazer tudo de uma vez. 💙</p>`}
   </div></div>`;
+}
+
+
+function createPatient(){
+  const name=document.getElementById("pname").value.trim();
+  const user=document.getElementById("puser").value.trim();
+  const pass=document.getElementById("ppass").value;
+  if(!name||!user||!pass){alert("Preencha nome, usuário e senha.");return;}
+  const patients=JSON.parse(localStorage.getItem("mr_patients")||"[]");
+  patients.push({id:Date.now(),name,user,created:new Date().toISOString(),routine:"08:00–22:00"});
+  localStorage.setItem("mr_patients",JSON.stringify(patients));
+  alert("Paciente criado no protótipo. Na versão online, o acesso deverá ser protegido por autenticação real.");
+  nav("patients");
 }
 
 function render(){document.getElementById("root").innerHTML=mode==="patient"?patient():pro()}
