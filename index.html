@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Minha Rotina — Ressignificar</title>
+<style>
+:root{--green:#3f8f70;--green2:#e9f5ef;--blue:#416b9a;--cream:#faf8f3;--text:#24323a;--muted:#71808a;--red:#d86b6b;--yellow:#e5ae45;--line:#e5e9e7}
+*{box-sizing:border-box}body{margin:0;background:#eef2f0;font-family:Inter,Arial,sans-serif;color:var(--text)}
+.app{max-width:1100px;margin:24px auto;background:#fff;min-height:90vh;border-radius:24px;overflow:hidden;box-shadow:0 10px 35px #00000012}
+header{padding:22px 28px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;align-items:center}
+.brand{font-weight:800;font-size:22px;color:#234d40}.brand small{display:block;font-size:12px;color:var(--muted);font-weight:500;margin-top:3px}
+.switch{display:flex;background:#f0f4f2;padding:4px;border-radius:12px}.switch button{border:0;padding:9px 14px;border-radius:9px;background:transparent;color:var(--muted);cursor:pointer}.switch button.active{background:#fff;color:var(--green);box-shadow:0 2px 8px #00000010}
+main{display:grid;grid-template-columns:220px 1fr;min-height:750px}.nav{background:var(--cream);padding:20px 14px}.nav button{width:100%;border:0;background:transparent;text-align:left;padding:13px 14px;border-radius:12px;margin-bottom:6px;cursor:pointer;color:#52616a}.nav button.active{background:#e6f2ec;color:#236149;font-weight:700}.content{padding:28px;max-width:820px}
+h1{font-size:28px;margin:0 0 5px}h2{font-size:20px;margin:0 0 16px}.sub{color:var(--muted);margin-bottom:22px}.card{border:1px solid var(--line);border-radius:18px;padding:18px;margin-bottom:16px;background:#fff}.hero{background:linear-gradient(135deg,#eef8f2,#f7fbfa)}
+.task{display:grid;grid-template-columns:58px 1fr auto;gap:12px;align-items:center;padding:14px 0;border-bottom:1px solid var(--line)}.task:last-child{border-bottom:0}.time{font-weight:800;color:#4b6d62}.task-title{font-weight:700}.task small{display:block;color:var(--muted);margin-top:4px}.check{width:26px;height:26px;border:2px solid #b8c7c1;border-radius:50%;cursor:pointer;background:#fff}.check.done{background:var(--green);border-color:var(--green);position:relative}.check.done:after{content:"✓";color:white;position:absolute;left:5px;top:1px;font-weight:800}.badge{font-size:11px;padding:5px 8px;border-radius:999px;background:#f1f4f3;color:#60706b}.support{display:flex;gap:7px;flex-wrap:wrap}.support button{border:1px solid var(--line);background:#fff;border-radius:9px;padding:7px 9px;font-size:11px;cursor:pointer}.support button.sel{border-color:var(--green);background:var(--green2);color:#236149;font-weight:700}
+.moods{display:flex;gap:10px;flex-wrap:wrap}.mood{border:1px solid var(--line);background:#fff;border-radius:14px;padding:11px 12px;cursor:pointer}.mood.sel{border-color:var(--blue);background:#eef4fa}.quote{font-size:16px;line-height:1.5;color:#46645a}.btn{border:0;border-radius:12px;background:var(--green);color:#fff;padding:11px 16px;font-weight:700;cursor:pointer}.btn.secondary{background:#eef3f1;color:#315c4c}
+.progress{height:12px;background:#e9eeec;border-radius:99px;overflow:hidden}.progress span{display:block;height:100%;background:var(--green);border-radius:99px;width:0}
+.kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.kpi{padding:16px;border-radius:15px;background:#f7faf9}.kpi b{font-size:25px}.kpi small{display:block;color:var(--muted);margin-top:5px}.bar{height:18px;background:#edf1ef;border-radius:9px;overflow:hidden;margin:8px 0}.bar i{display:block;height:100%;background:var(--green)}.legend{display:flex;gap:15px;font-size:12px;color:var(--muted);flex-wrap:wrap}.dot{width:9px;height:9px;border-radius:50%;display:inline-block;margin-right:5px}.green{background:#4f9a76}.yellow{background:#e5ae45}.red{background:#d86b6b}.gray{background:#aeb8b4}
+input,textarea,select{width:100%;padding:11px;border:1px solid var(--line);border-radius:10px;font:inherit}label{font-size:12px;color:var(--muted);display:block;margin:12px 0 5px}
+@media(max-width:760px){main{grid-template-columns:1fr}.nav{display:flex;overflow:auto;padding:10px}.nav button{min-width:max-content;margin:0 4px}.content{padding:18px}.kpis{grid-template-columns:1fr}header{padding:16px}.switch button{padding:8px 9px}}
+
+.modalback{position:fixed;inset:0;background:#20352f66;display:flex;align-items:center;justify-content:center;padding:18px;z-index:10}
+.modal{position:relative;background:#fff;border-radius:22px;padding:26px;max-width:560px;width:100%;max-height:90vh;overflow:auto;box-shadow:0 20px 60px #0003}
+.close{position:absolute;right:16px;top:12px;border:0;background:#eef3f1;border-radius:50%;width:34px;height:34px;font-size:23px;color:#557067;cursor:pointer}
+.step{display:flex;align-items:center;gap:12px;padding:14px;border:1px solid var(--line);border-radius:12px;margin:8px 0;cursor:pointer}
+.stepcheck{width:25px;height:25px;border:2px solid #b8c7c1;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;flex:none}
+.stepdone{background:var(--green2);border-color:#a9cfbd;text-decoration:line-through;color:#567}
+.stepdone .stepcheck{background:var(--green);border-color:var(--green);color:#fff}
+.success{margin-top:18px;padding:14px;border-radius:12px;background:var(--green2);color:#28644e;font-weight:700}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+<div class="brand">🌿 Minha Rotina <small>Clínica Ressignificar • Acompanhamento</small></div>
+<div class="switch"><button id="patientBtn" class="active" onclick="setMode('patient')">Paciente</button><button id="proBtn" onclick="setMode('pro')">Psicóloga</button></div>
+</header>
+<div id="root"></div>
+</div>
+<script>
+const defaultTasks=[
+{id:1,time:"08:00",title:"Levantar da cama",desc:"Começar o dia e abrir a janela",done:true,support:"independente"},
+{id:2,time:"08:15",title:"Higiene pessoal",desc:"Escovar os dentes, lavar o rosto e pentear o cabelo",done:true,support:"lembrete"},
+{id:3,time:"08:40",title:"Tomar café da manhã",desc:"Fazer a refeição da manhã",done:false,support:""},
+{id:4,time:"09:00",title:"Organizar o ambiente",desc:"Guardar objetos e deixar o espaço organizado",done:false,support:"acompanhamento"},
+{id:5,time:"10:00",title:"Estudos / atividade principal",desc:"Realizar a atividade planejada para o dia",done:false,support:""},
+{id:6,time:"11:00",title:"Pausa programada",desc:"Descansar, beber água e retomar quando estiver pronto",done:false,support:""},
+{id:7,time:"12:00",title:"Almoço",desc:"Fazer a refeição e organizar o local após comer",done:false,support:""},
+{id:8,time:"13:00",title:"Tempo livre / descanso",desc:"Momento de lazer ou descanso",done:false,support:""},
+{id:9,time:"14:00",title:"Atividade da tarde",desc:"Tarefa, estudo, compromisso ou atividade terapêutica",done:false,support:""},
+{id:10,time:"15:30",title:"Lanche / hidratação",desc:"Fazer um pequeno lanche e beber água",done:false,support:""},
+{id:11,time:"16:00",title:"Atividade de interesse",desc:"Hobby, artesanato, música, jogo ou outra atividade prazerosa",done:false,support:""},
+{id:12,time:"17:30",title:"Organização pessoal",desc:"Guardar objetos e preparar o que será necessário para amanhã",done:false,support:""},
+{id:13,time:"18:30",title:"Banho",desc:"Tomar banho e trocar de roupa",done:false,support:""},
+{id:14,time:"19:00",title:"Jantar",desc:"Fazer a refeição da noite",done:false,support:""},
+{id:15,time:"20:00",title:"Tempo livre",desc:"Lazer com atividade escolhida e tempo definido",done:false,support:""},
+{id:16,time:"21:00",title:"Preparar o dia seguinte",desc:"Separar roupas, materiais e conferir compromissos de amanhã",done:false,support:""},
+{id:17,time:"21:30",title:"Rotina de desaceleração",desc:"Diminuir estímulos, luzes e atividades agitadas",done:false,support:""},
+{id:18,time:"22:00",title:"Preparar para dormir",desc:"Higiene noturna, guardar o celular e ir para a cama",done:false,support:""}
+];
+
+const stepMap={
+1:["Sair da cama","Abrir a janela ou cortina","Ir ao banheiro"],
+2:["Ir até a pia","Pegar a escova de dentes","Colocar pasta de dente","Escovar os dentes","Enxaguar a boca","Lavar e guardar a escova"],
+3:["Sentar-se para a refeição","Preparar o café","Comer com calma","Guardar os utensílios","Beber água"],
+4:["Recolher objetos fora do lugar","Guardar cada objeto","Organizar a cama","Deixar o ambiente livre para circulação"],
+5:["Separar o material","Ler o que precisa ser feito","Começar pelo primeiro passo","Fazer a atividade","Conferir o que foi realizado","Guardar o material"],
+6:["Parar a atividade","Beber água","Sentar ou caminhar em um local tranquilo","Respirar lentamente","Retomar quando estiver pronto"],
+7:["Ir para o local da refeição","Preparar ou pegar a refeição","Comer","Beber água","Guardar os utensílios","Organizar o local"],
+8:["Escolher uma atividade de descanso","Definir o tempo","Realizar a atividade","Encerrar quando o tempo terminar"],
+9:["Verificar a atividade programada","Separar o que será necessário","Realizar um passo de cada vez","Concluir a atividade","Guardar os materiais"],
+10:["Preparar o lanche","Sentar para comer","Fazer o lanche","Beber água","Guardar os utensílios"],
+11:["Escolher uma atividade de interesse","Preparar o espaço","Realizar a atividade","Encerrar e guardar os materiais"],
+12:["Guardar objetos pessoais","Organizar o quarto ou espaço usado","Separar o que será necessário amanhã"],
+13:["Separar roupa e toalha","Ir ao banheiro","Tomar banho","Secar-se","Vestir roupa limpa","Guardar toalha e roupas"],
+14:["Preparar ou pegar o jantar","Sentar para comer","Fazer a refeição","Beber água","Guardar os utensílios","Organizar o local"],
+15:["Escolher uma atividade de lazer","Definir o tempo","Aproveitar o momento","Encerrar no horário combinado"],
+16:["Conferir compromissos de amanhã","Separar a roupa","Separar materiais","Deixar itens importantes prontos","Conferir o despertador"],
+17:["Diminuir luzes e estímulos","Encerrar atividades agitadas","Evitar telas ou reduzir o uso","Fazer algo tranquilo","Preparar o quarto"],
+18:["Ir ao banheiro","Escovar os dentes","Lavar o rosto","Guardar o celular","Deitar na cama","Fazer uma respiração tranquila","Dormir"]
+};
+let activeTaskId=null, stepState={};
+
+let storedTasks=JSON.parse(localStorage.getItem("mr_tasks")||"null");
+let tasks=(Array.isArray(storedTasks) && storedTasks.some(t=>t.time==="22:00"))?storedTasks:defaultTasks;
+let mood=localStorage.getItem("mr_mood")||"";
+let mode="patient",page="home";
+function save(){localStorage.setItem("mr_tasks",JSON.stringify(tasks));localStorage.setItem("mr_mood",mood)}
+function pct(){return Math.round(tasks.filter(t=>t.done).length/tasks.length*100)}
+function setMode(m){mode=m;page=m==="patient"?"home":"dashboard";document.getElementById("patientBtn").classList.toggle("active",m==="patient");document.getElementById("proBtn").classList.toggle("active",m==="pro");render()}
+function nav(p){page=p;render()}
+function taskList(){
+return tasks.map(t=>`<div class="task">
+<div class="time">${t.time}</div><div><div class="task-title">${t.title}</div><small>${t.desc}</small>${t.support?`<div class="support" style="margin-top:7px"><span class="badge">${t.support==="independente"?"🟢 Independente":t.support==="lembrete"?"🟡 Com lembrete":"🔴 Com acompanhamento"}</span></div>`:""}</div>
+<button class="check ${t.done?"done":""}" onclick="toggleTask(${t.id})" aria-label="Concluir"></button>
+<button class="btn secondary" style="padding:7px 10px;font-size:11px" onclick="openTask(${t.id})">Abrir passos</button></div>`).join("")
+}
+function toggleTask(id){let t=tasks.find(x=>x.id===id);t.done=!t.done;if(t.done&&!t.support)t.support="independente";save();render()}
+function setMood(m){mood=m;save();render()}
+function patient(){
+let content="";
+if(page==="home") content=`<div class="card" style="background:#f7faf9"><b>👤 Paciente</b><span class="badge" style="float:right">Acesso individual</span><p class="sub" style="margin:6px 0 0">Minha rotina pessoal • 08:00 às 22:00</p></div><div class="card hero"><h1>Bom dia! ☀️</h1><div class="sub">Terça-feira, 15 de setembro • Rotina das 08:00 às 22:00</div><p class="quote">“Pequenos passos também são grandes conquistas.”</p><div class="progress"><span style="width:${pct()}%"></span></div><small>${pct()}% da rotina concluída</small><div style="margin-top:14px"><button class="btn secondary" onclick="alert('Pedido de ajuda registrado no protótipo. Na versão online, isso será enviado para o painel da psicóloga.')">🆘 Preciso de ajuda</button></div></div>
+<div class="card"><h2>Minha rotina de hoje</h2>${taskList()}</div>`;
+else if(page==="mood") content=`<div class="card"><h1>Como você está agora?</h1><p class="sub">Antes de começar, escolha como você está se sentindo.</p><div class="moods">${["😀 Tranquilo","🙂 Bem","😐 Normal","😟 Ansioso","😣 Muito ansioso"].map(x=>`<button class="mood ${mood===x?"sel":""}" onclick="setMood('${x}')">${x}</button>`).join("")}</div>${mood.includes("Ansioso")?`<div class="card hero" style="margin-top:20px"><h2>Vamos por partes. 💙</h2><p>1️⃣ Respire lentamente<br>2️⃣ Leia somente a próxima tarefa<br>3️⃣ Comece pelo primeiro passo<br>4️⃣ Se precisar, peça ajuda</p><button class="btn">Iniciar respiração guiada</button></div>`:""}</div>`;
+else if(page==="goals") content=`<div class="card"><h1>Minhas conquistas ⭐</h1><p class="sub">Acompanhe seu progresso sem pressa.</p><div class="kpis"><div class="kpi"><b>${tasks.filter(t=>t.done).length}</b><small>Tarefas concluídas</small></div><div class="kpi"><b>${pct()}%</b><small>Rotina de hoje</small></div><div class="kpi"><b>3</b><small>Dias de sequência</small></div></div><div class="card hero" style="margin-top:16px"><b>🎯 Meta atual</b><p>Realizar 3 tarefas da manhã com autonomia.</p><div class="progress"><span style="width:66%"></span></div></div></div>`;
+else content=`<div class="card"><h1>Ferramentas de apoio</h1><p class="sub">Recursos para ajudar a iniciar uma tarefa e regular a ansiedade.</p><div class="kpis"><div class="kpi">🫁<br><b>Respiração</b><small>Exercício guiado</small></div><div class="kpi">🌿<br><b>Relaxamento</b><small>Pausa consciente</small></div><div class="kpi">🎧<br><b>Música tranquila</b><small>Ambiente regulador</small></div></div></div>`;
+return guidedTask()+`<main><aside class="nav"><button class="${page==='home'?'active':''}" onclick="nav('home')">🏠 Minha rotina</button><button class="${page==='mood'?'active':''}" onclick="nav('mood')">😊 Como estou</button><button class="${page==='goals'?'active':''}" onclick="nav('goals')">⭐ Conquistas</button><button class="${page==='tools'?'active':''}" onclick="nav('tools')">🌿 Apoio</button></aside><section class="content">${content}</section></main>`
+}
+function pro(){
+let done=tasks.filter(t=>t.done).length, indep=tasks.filter(t=>t.support==="independente").length, rem=tasks.filter(t=>t.support==="lembrete").length, acomp=tasks.filter(t=>t.support==="acompanhamento").length;
+let content="";
+if(page==="dashboard") content=`<div class="card hero"><h1>Olá, Rubiana! 👋</h1><p class="sub">Acompanhe a rotina das 08:00 às 22:00 e o desenvolvimento de autonomia do paciente.</p><div class="kpis"><div class="kpi"><b>${done}/${tasks.length}</b><small>Tarefas concluídas</small></div><div class="kpi"><b>${pct()}%</b><small>Rotina realizada</small></div><div class="kpi"><b>${indep}</b><small>Independentes</small></div></div></div>
+<div class="card"><h2>Acompanhamento de hoje</h2>${tasks.map(t=>`<div class="task"><div class="time">${t.time}</div><div><div class="task-title">${t.title}</div><small>${t.done?"Concluída":"Pendente"}</small></div><span class="badge">${t.support==="independente"?"🟢 Independente":t.support==="lembrete"?"🟡 Lembrete":t.support==="acompanhamento"?"🔴 Acompanhamento":"⚪ Sem registro"}</span></div>`).join("")}</div>`;
+else if(page==="tracking") content=`<div class="card"><h1>Rotinas e tarefas</h1><p class="sub">Defina tarefas objetivas, previsíveis e divididas em pequenos passos.</p><label>Nova tarefa</label><input id="newTask" placeholder="Ex.: Separar roupas do dia seguinte"><label>Horário</label><input id="newTime" type="time" value="18:00"><br><br><button class="btn" onclick="addTask()">+ Adicionar tarefa</button></div><div class="card"><h2>Tarefas cadastradas</h2>${taskList()}</div>`;
+else if(page==="notes") content=`<div class="card"><h1>Detalhes e observações</h1><p class="sub">Registre dados relevantes para a intervenção e acompanhamento da autonomia.</p><label>Selecione a tarefa</label><select id="selTask">${tasks.map(t=>`<option value="${t.id}">${t.time} — ${t.title}</option>`).join("")}</select><label>Nível de suporte</label><div class="support"><button onclick="setSupport('independente')">🟢 Independente</button><button onclick="setSupport('lembrete')">🟡 Com lembrete</button><button onclick="setSupport('acompanhamento')">🔴 Com acompanhamento</button></div><label>Observação</label><textarea id="obs" rows="5" placeholder="Ex.: Apresentou dificuldade para iniciar. Após orientação, conseguiu concluir."></textarea><br><br><button class="btn" onclick="saveNote()">Salvar registro</button></div>`;
+else if(page==="reports") content=`<div class="card"><h1>Evolução semanal</h1><p class="sub">O objetivo é acompanhar a redução gradual do suporte necessário.</p><div><b>🟢 Independente</b><div class="bar"><i style="width:${Math.min(100,indep/tasks.length*100)}%"></i></div><b>🟡 Com lembrete</b><div class="bar"><i style="width:${Math.min(100,rem/tasks.length*100)}%"></i></div><b>🔴 Com acompanhamento</b><div class="bar"><i style="width:${Math.min(100,acomp/tasks.length*100)}%"></i></div></div><hr style="border:0;border-top:1px solid var(--line);margin:20px 0"><div class="legend"><span><i class="dot green"></i>Independente</span><span><i class="dot yellow"></i>Lembrete</span><span><i class="dot red"></i>Acompanhamento</span></div></div>`;
+else content=`<div class="card"><h1>Metas terapêuticas 🎯</h1><p class="sub">Metas objetivas, graduais e observáveis.</p><div class="card hero"><b>Meta atual</b><p>Realizar 3 tarefas da manhã com autonomia.</p><div class="progress"><span style="width:66%"></span></div><small>2 de 3 dias alcançados</small></div><button class="btn">+ Nova meta</button></div>`;
+return `<main><aside class="nav"><button class="${page==='dashboard'?'active':''}" onclick="nav('dashboard')">📊 Visão geral</button><button class="${page==='tracking'?'active':''}" onclick="nav('tracking')">📋 Rotinas e tarefas</button><button class="${page==='notes'?'active':''}" onclick="nav('notes')">📝 Observações</button><button class="${page==='reports'?'active':''}" onclick="nav('reports')">📈 Evolução</button><button class="${page==='goals'?'active':''}" onclick="nav('goals')">🎯 Metas</button></aside><section class="content">${content}</section></main>`
+}
+function addTask(){let title=document.getElementById("newTask").value.trim(),time=document.getElementById("newTime").value;if(!title)return alert("Digite uma tarefa.");tasks.push({id:Date.now(),time,title,desc:"Tarefa adicionada pela psicóloga",done:false,support:""});tasks.sort((a,b)=>a.time.localeCompare(b.time));save();render()}
+function setSupport(s){let id=+document.getElementById("selTask").value;let t=tasks.find(x=>x.id===id);t.support=s;save();render()}
+function saveNote(){alert("Registro salvo no protótipo. Para uma versão com banco de dados e login, essa função deverá ser conectada a um backend seguro.");}
+
+function openTask(id){
+  activeTaskId=id;
+  if(!stepState[id]) stepState[id]=Array((stepMap[id]||[]).length).fill(false);
+  render();
+}
+function toggleStep(i){
+  if(activeTaskId===null)return;
+  stepState[activeTaskId][i]=!stepState[activeTaskId][i];
+  if(stepState[activeTaskId].every(Boolean)){
+    const t=tasks.find(x=>x.id===activeTaskId); if(t){t.done=true;t.support=t.support||"independente";save();}
+  }
+  render();
+}
+function closeTask(){activeTaskId=null;render()}
+function guidedTask(){
+  if(activeTaskId===null)return "";
+  const t=tasks.find(x=>x.id===activeTaskId), ss=stepState[activeTaskId]||[];
+  const st=stepMap[activeTaskId]||["Realizar a tarefa"];
+  const n=ss.filter(Boolean).length, all=n===st.length;
+  return `<div class="modalback"><div class="modal"><button class="close" onclick="closeTask()">×</button>
+  <div class="sub">${t.time}</div><h1>${t.title}</h1><p class="sub">${t.desc}</p>
+  <div class="progress"><span style="width:${Math.round(n/st.length*100)}%"></span></div><small>${n} de ${st.length} passos concluídos</small>
+  <div style="margin-top:18px">${st.map((s,i)=>`<div class="step ${ss[i]?'stepdone':''}" onclick="toggleStep(${i})"><span class="stepcheck">${ss[i]?'✓':''}</span><span>${i+1}. ${s}</span></div>`).join("")}</div>
+  ${all?`<div class="success">🎉 Muito bem! Você concluiu essa atividade.</div>`:`<p class="quote" style="margin-top:18px">Faça apenas o próximo passo. Você não precisa fazer tudo de uma vez. 💙</p>`}
+  </div></div>`;
+}
+
+function render(){document.getElementById("root").innerHTML=mode==="patient"?patient():pro()}
+render();
+</script>
+</body>
+</html>
